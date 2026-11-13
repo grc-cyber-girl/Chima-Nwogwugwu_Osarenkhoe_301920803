@@ -69,4 +69,4 @@ The following integrity constraints will also be introduced:
 3. Both sender and receiver accounts must exist.
 4. Account balance must not be negative.
 5. A beneficiary should not be registered more than once by the same customer for the same bank account.
-6. A transaction must not be marked Successful unless the corresponding debit and credit have been completed
+6. A transaction must not be marked Successful unless the corresponding debit and credit have been completedw   
