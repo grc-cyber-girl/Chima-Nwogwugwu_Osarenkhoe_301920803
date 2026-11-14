@@ -22,6 +22,6 @@ This repository contains five practical portfolios completed for MIT 8103 Advanc
 
 ### Final Documentation
 
-- [View Final Portfolio Summary](./Final_Documentation/)
+- [View Final Portfolio Summary](./Chima-Nwogwugwu_Osarenkhoe_301920803_Final_Documentation/)
 
 Each folder will contain its scripts, notes and execution evidence.
