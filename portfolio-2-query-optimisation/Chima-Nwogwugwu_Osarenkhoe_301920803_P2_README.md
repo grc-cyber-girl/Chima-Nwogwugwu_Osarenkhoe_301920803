@@ -30,7 +30,7 @@ Before indexing, PostgreSQL used a Sequential Scan, checking all 100,000 records
 
 | File | Description |
 | --- | --- |
-| [P2_Queries.sql](P2_Queries.sql) | SQL queries for the digital banking database. |
+| [Chima-Nwogwugwu_Osarenkhoe_301920803_P2_Queries.sql](Chima-Nwogwugwu_Osarenkhoe_301920803_P2_Queries.sql) | SQL queries for the digital banking database. |
 | [Chima-Nwogwugwu_Osarenkhoe_301920803_P2_Optimisation.sql](Chima-Nwogwugwu_Osarenkhoe_301920803_P2_Optimisation.sql) | Benchmark setup, transaction count query, execution plans and index creation. |
 | [screenshots/](screenshots/) | Folder containing query results and before-and-after execution plan screenshots. |
 
