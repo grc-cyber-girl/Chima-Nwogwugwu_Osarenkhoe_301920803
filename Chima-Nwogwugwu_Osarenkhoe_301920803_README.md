@@ -6,7 +6,7 @@ Student ID: 301920803
 
 ## Case study
 
-To be selected in the next step.
+A Digital Banking Platform which focuses on designing and implementing databases to support customer and account management, authentication, fund transfers, beneficiary management and transaction history
 
 ## Portfolio folders
 
