@@ -1,85 +1,54 @@
 # MIT 8103 Advanced Database Systems: Portfolio Summary
 
-**Case Study:** Digital Banking Platform  
-**Name:** Osarenkhoe Chima-Nwogwugwu  
-**Student ID:** 301920803  
+**Case Study:** Digital Banking Platform
+
+**Name:** Osarenkhoe Chima-Nwogwugwu
+
+**Student ID:** 301920803
+
 **GitHub:** [grc-cyber-girl/Chima-Nwogwugwu_Osarenkhoe_301920803](https://github.com/grc-cyber-girl/Chima-Nwogwugwu_Osarenkhoe_301920803)
 
-## Case study
+# Case study
 
-The five portfolios focused on designing and working with databases for a Digital Banking Platform. The platform supports customer and account management, authentication, fund transfers, beneficiaries and transaction history. The exercises covered relational database design, query processing, transactions, MongoDB and distributed database concepts.
+The five portfolios applied database concepts to a Digital Banking Platform supporting customer and account management, authentication, transfers, beneficiaries and transaction history. PostgreSQL was used for structured banking records, while MongoDB was explored for transaction event documents.
 
-The work used PostgreSQL for structured banking records and MongoDB for transaction event documents. This provided practical experience with different database models and how database design affects data management, retrieval and reliability.
+# Portfolio 1: Database Design and Modelling
 
-## Portfolio 1: Database Design and Modelling
+I designed the PostgreSQL database `digital_banking_portfolio` with five main tables: `customer`, `account`, `app_user`, `beneficiary` and `bank_transaction`. I identified the platform’s users, operations and business rules, including unique customer and account details, one account per customer, KYC before activation and sufficient funds before a transfer.
 
-I designed a relational database for the Digital Banking Platform using PostgreSQL. The database was named `digital_banking_portfolio` and included five main tables: `customer`, `account`, `app_user`, `beneficiary` and `bank_transaction`.
+Primary keys, foreign keys, unique constraints and check constraints helped protect data integrity, including preventing duplicate account numbers and negative balances. I also identified rules—such as customer age and transfer-fund checks—that require application or transaction-level logic.
 
-I identified the main users, system operations and business rules before developing the database structure. These rules included unique customer details and account numbers, one account per customer, KYC verification before account activation, and sufficient funds before a transfer could take place.
+# Portfolio 2: Query Processing and Optimisation
 
-I used primary keys, foreign keys, unique constraints and check constraints to maintain data integrity. For example, the constraints helped prevent duplicate account numbers and negative account balances. I also recognised that some rules, such as checking a customer's age and ensuring sufficient funds during a transfer, require application or transaction-level logic.
+I wrote queries to identify pending transactions, accounts without transactions and transaction counts by customer. I then tested a date-range query against 100,000 synthetic transaction records before and after adding an index on `transaction_date`.
 
-This portfolio helped me understand the importance of planning a database structure before implementation. It also showed how constraints help maintain reliable banking records.
+The median execution time fell from 6.942 ms to 0.047 ms. The plan changed from a Sequential Scan to an Index Only Scan, while shared buffer hits on the third run fell from 896 to 3. This showed a substantial improvement for this query and test dataset, not a guarantee for all workloads. Indexes also use storage and can add write overhead.
 
-## Portfolio 2: Query Processing and Optimisation
+# Portfolio 3: Transactions and Concurrency
 
-In this portfolio, I wrote SQL queries to retrieve information from the banking database. The queries identified pending transactions, accounts without transactions and the number of transactions associated with each customer.
+I used COMMIT and ROLLBACK to examine transaction behaviour. A customer login-date update was committed. In a separate test, a balance update violated a constraint; rolling back the transaction undid the earlier balance reduction within it.
 
-I also investigated query performance using a benchmark table containing 100,000 synthetic transaction records. I ran the same date-range query before and after creating an index on the `transaction_date` column.
+I also tested concurrent withdrawals using two PostgreSQL sessions at READ COMMITTED. Both attempted to withdraw ₦30,000 from an account holding ₦50,000. Session A updated and committed first. Session B waited for the row lock, then updated zero rows because the remaining balance was insufficient. The final balance was ₦20,000. This demonstrated conditional updates and row locking for withdrawals, not a complete transfer between accounts.
 
-The measured median execution time changed from 6.942 ms to 0.047 ms. The execution plan also changed from a Sequential Scan to an Index Only Scan.
+# Portfolio 4: NoSQL and Advanced Data Models
 
-| **Measurement**                | **Before index** | **After index** |
-| ------------------------------ | ---------------- | --------------- |
-| Median execution time          | 6.942 ms         | 0.047 ms        |
-| Execution plan                 | Sequential Scan  | Index Only Scan |
-| Shared buffer hits (third run) | 896              | 3               |
+I installed MongoDB Community Server in an Ubuntu 24.04 GitHub Codespace and confirmed the server was running. In the `digital_banking_events` database, I created and queried three event documents representing completed, pending and failed transfers. I used queries to count documents, find events for a sender and retrieve successful events.
 
-These results showed that the index improved performance for this particular query and test dataset. However, the results do not guarantee the same improvement for every query or database environment. Indexes also require storage and can add overhead when records are inserted or updated.
+I initially found the event structure and queries difficult to understand. Reviewing examples and conducting further research helped me understand how MongoDB stores flexible documents and how queries retrieve event information.
 
-## Portfolio 3: Transactions and Concurrency
+# Portfolio 5: Distributed and Cloud Database Exercise
 
-This portfolio focused on how PostgreSQL handles transactions and concurrent database operations.
+I proposed a MongoDB replica set with three voting members across separate hosts or failure zones: one primary and two secondaries. The design considered elections, majority voting and `w: "majority"` write concern, alongside replication, sharding, cloud deployment, security, backups and cost.
 
-I used **COMMIT** and **ROLLBACK** to test transaction behaviour. In one exercise, I updated a customer's last login date and committed the change. In another, I attempted an account balance update that violated the balance constraint. The transaction was rolled back, and the earlier balance reduction within that transaction was undone.
+This was a proposed design, not a deployment. I did not run a three-member replica set or perform failover, replication or cloud performance tests.
 
-I also used two PostgreSQL sessions at the **READ COMMITTED** isolation level to test concurrent withdrawals. Both sessions attempted to withdraw ₦30,000 from an account with an available balance of ₦50,000. Session A completed its update and committed. Session B waited for the row lock, then returned zero updated rows because the remaining balance was no longer sufficient.
+# Evidence
 
-The final balance was ₦20,000. This demonstrated how conditional updates and row locking can help prevent concurrent withdrawals from exceeding an account's available balance. The exercise tested the withdrawal operation, not a complete transfer between two accounts.
-
-## Portfolio 4: NoSQL and Advanced Data Models
-
-I explored MongoDB as a NoSQL database for storing transaction events. I installed MongoDB Community Server in an Ubuntu 24.04 GitHub Codespace and confirmed that the server was running using `db.version()` and a ping command.
-
-I created and queried three transaction event documents in the `digital_banking_events` database. The documents represented different transaction outcomes, including completed, pending and failed transfers. I used MongoDB queries to count the documents, retrieve events associated with a sender and find events with a successful status.
-
-One difficulty I encountered was understanding how the events were structured and how the queries worked. I reviewed the examples and carried out further research to improve my understanding.
-
-This exercise helped me understand how MongoDB stores data in flexible documents and how embedded information can support transaction event records. It also reinforced the importance of choosing a suitable data model for the information being stored.
-
-## Portfolio 5: Distributed and Cloud Database Exercise
-
-This portfolio explored how a distributed database environment could support availability and resilience in a banking platform.
-
-I proposed a MongoDB replica set with three voting members distributed across separate hosts or failure zones. The design included one primary and two secondary members. It explained how elections could take place when a primary becomes unavailable and how a majority of members is required to elect a new primary.
-
-I also considered write concern, particularly `w: "majority"`, and how it affects write acknowledgement. The portfolio also discussed replication, sharding, cloud deployment, security, backup and cost considerations.
-
-The proposed replica set and cloud deployment were design exercises. I did not deploy a three-member replica set or perform failover, replication or cloud performance tests. The work focused on understanding the architecture and its trade-offs.
-
-## Evidence
-
-The GitHub repository contains the portfolio documentation, SQL scripts, MongoDB exercise files and screenshots.
-
-- **Portfolio 1:** Design, ER diagram, normalisation, schema, sample data and constraint test files.
-- **Portfolio 2:** SQL query and optimisation scripts, query result screenshots, and before-and-after index execution plan screenshots.
-- **Portfolio 3:** Transaction script, concurrency scripts, and screenshots showing commit, rollback and concurrency results.
-- **Portfolio 4:** MongoDB setup documentation, MongoDB scripts, and screenshots showing the MongoDB connection, events and queries.
-- **Portfolio 5:** Documentation of the proposed distributed database architecture and its considerations.
+Portfolio evidence in the GitHub repository includes the database design and SQL files; query, optimisation and execution-plan screenshots; transaction and concurrency scripts (`SessionA.sql` and `SessionB.sql`); MongoDB setup, event scripts and screenshots; and the proposed distributed-database design.
 
 All evidence is available in the [GitHub repository](https://github.com/grc-cyber-girl/Chima-Nwogwugwu_Osarenkhoe_301920803).
 
-## Individual reflection
+# Individual reflection
 
 Completing these portfolios improved my understanding of database design and implementation. One important design choice was using PostgreSQL for core banking records and MongoDB for transaction event documents. This helped me appreciate that different database technologies can serve different purposes within the same platform.
 
@@ -87,24 +56,20 @@ I found the events and queries exercise in Portfolio 4 challenging because I ini
 
 One of my most important lessons was that the efficiency of a good database starts with its design. A well-designed database makes it easier to manage data, retrieve information and maintain consistency.
 
-## References
+# References
 
-- PostgreSQL. (2024). *PostgreSQL Documentation: Constraints*. [https://www.postgresql.org/docs/16/ddl-constraints.html](https://www.postgresql.org/docs/16/ddl-constraints.html)
-- PostgreSQL. *Using EXPLAIN*. [https://www.postgresql.org/docs/current/using-explain.html](https://www.postgresql.org/docs/current/using-explain.html)
-- PostgreSQL. *Transaction Isolation*. [https://www.postgresql.org/docs/current/transaction-iso.html](https://www.postgresql.org/docs/current/transaction-iso.html)
-- PostgreSQL. *Explicit Locking*. [https://www.postgresql.org/docs/current/explicit-locking.html](https://www.postgresql.org/docs/current/explicit-locking.html)
-- MongoDB. *Insert Multiple Documents*. [https://www.mongodb.com/docs/manual/reference/method/db.collection.insertMany/](https://www.mongodb.com/docs/manual/reference/method/db.collection.insertMany/)
-- MongoDB. *Query Documents*. [https://www.mongodb.com/docs/manual/tutorial/query-documents/](https://www.mongodb.com/docs/manual/tutorial/query-documents/)
-- MongoDB. *Replication*. [https://www.mongodb.com/docs/manual/replication/](https://www.mongodb.com/docs/manual/replication/)
-- MongoDB. *Replica Set Elections*. [https://www.mongodb.com/docs/v8.0/core/replica-set-elections/](https://www.mongodb.com/docs/v8.0/core/replica-set-elections/)
-- MongoDB. *Write Concern*. [https://www.mongodb.com/docs/v8.0/reference/write-concern/](https://www.mongodb.com/docs/v8.0/reference/write-concern/)
+- PostgreSQL: Constraints — [https://www.postgresql.org/docs/16/ddl-constraints.html](https://www.postgresql.org/docs/16/ddl-constraints.html)
+- PostgreSQL: Using EXPLAIN — [https://www.postgresql.org/docs/current/using-explain.html](https://www.postgresql.org/docs/current/using-explain.html)
+- PostgreSQL: Transaction Isolation — [https://www.postgresql.org/docs/current/transaction-iso.html](https://www.postgresql.org/docs/current/transaction-iso.html)
+- PostgreSQL: Explicit Locking — [https://www.postgresql.org/docs/current/explicit-locking.html](https://www.postgresql.org/docs/current/explicit-locking.html)
+- MongoDB: Insert Multiple Documents — [https://www.mongodb.com/docs/manual/reference/method/db.collection.insertMany/](https://www.mongodb.com/docs/manual/reference/method/db.collection.insertMany/)
+- MongoDB: Query Documents — [https://www.mongodb.com/docs/manual/tutorial/query-documents/](https://www.mongodb.com/docs/manual/tutorial/query-documents/)
+- MongoDB: Replication — [https://www.mongodb.com/docs/manual/replication/](https://www.mongodb.com/docs/manual/replication/)
+- MongoDB: Replica Set Elections — [https://www.mongodb.com/docs/v8.0/core/replica-set-elections/](https://www.mongodb.com/docs/v8.0/core/replica-set-elections/)
+- MongoDB: Write Concern — [https://www.mongodb.com/docs/v8.0/reference/write-concern/](https://www.mongodb.com/docs/v8.0/reference/write-concern/)
 
-## AI-use declaration
+# AI-use declaration
 
 I used ChatGPT as a learning and support tool during the completion of the portfolios. It helped explain database concepts, generate fictional data for the exercises and troubleshoot errors encountered during implementation.
 
 I personally ran and reviewed the SQL and MongoDB commands and checked their outputs before using them as evidence. I used the explanations and suggestions to support my understanding and complete the practical exercises. The final work and evidence reflect the commands I executed and the results I reviewed.
-
-## Overall conclusion
-
-Overall, these five portfolios gave me practical experience in database design, SQL querying, performance optimisation, transaction management, NoSQL and distributed database concepts. I gained a better understanding of how database structure, integrity and performance contribute to a reliable digital banking platform. The exercises also strengthened my ability to research unfamiliar concepts, troubleshoot errors and apply what I learned. This has provided a useful foundation for further learning and practical work in database systems.
